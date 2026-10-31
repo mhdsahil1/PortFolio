@@ -56,7 +56,7 @@ export default function Experience() {
                 transition={{ duration: 0.5, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
                 className="grid grid-cols-1 md:grid-cols-12 gap-4 pb-10 border-b border-[#E2E0E8] dark:border-[#292630]/60 last:border-b-0 items-start"
               >
-                <div className="md:col-span-4 font-['IBM_Plex_Mono'] text-xs uppercase text-[#868391] dark:text-[#68646D] tracking-wider pt-1">
+                <div className="md:col-span-4 font-['IBM_Plex_Mono'] text-xs uppercase text-[#585563] dark:text-[#A9A5AC] tracking-wider pt-1">
                   {entry.period}
                 </div>
 
@@ -92,7 +92,7 @@ export default function Experience() {
                 <h4 className="font-['Inter'] font-semibold text-lg sm:text-xl text-[#121114] dark:text-[#F5F2F2] m-0">
                   {personalInfo.education.degree}
                 </h4>
-                <span className="font-['IBM_Plex_Mono'] text-xs uppercase text-[#868391] dark:text-[#68646D]">
+                <span className="font-['IBM_Plex_Mono'] text-xs uppercase text-[#585563] dark:text-[#A9A5AC]">
                   {personalInfo.education.years}
                 </span>
               </div>

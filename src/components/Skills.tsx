@@ -55,7 +55,7 @@ export default function Skills() {
                 transition={{ duration: 0.5, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
                 className="flex flex-col items-start"
               >
-                <h4 className="font-['IBM_Plex_Mono'] text-xs uppercase tracking-widest text-[#868391] dark:text-[#68646D] mb-5 block font-normal m-0">
+                <h4 className="font-['IBM_Plex_Mono'] text-xs uppercase tracking-widest text-[#585563] dark:text-[#A9A5AC] mb-5 block font-normal m-0">
                   {group.category}
                 </h4>
 

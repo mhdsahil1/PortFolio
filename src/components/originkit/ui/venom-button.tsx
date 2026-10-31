@@ -10,6 +10,7 @@ const RenderTarget = {
 };
 
 import { useEffect, useRef, useState, type CSSProperties } from "react"
+import { subscribePageVisibility } from "@/lib/browser-signals"
 
 const GLOVE =
     "M9 14V3.6a2.5 2.5 0 0 1 5 0V12.2a2.2 2.2 0 0 1 4.4 0.4a2.2 2.2 0 0 1 4.4 0.8a2.2 2.2 0 0 1 4.2 1.6V22c0 4-2.6 7-6 7H14.6c-3 0-5.4-1.8-6.6-4.4L4.1 18.6a2.3 2.3 0 0 1 3.6-2.8L9 17.4Z"
@@ -669,6 +670,8 @@ export default function VenomButton(props: Props) {
         let raf = 0
         let prev = -1
         let t0 = -1
+        let inView = false
+        let pageVisible = !document.hidden
         const draw = (now: number) => {
             const dt = prev < 0 ? 0 : Math.min(0.033, (now - prev) / 1000)
             const frameMs = prev < 0 ? 16 : now - prev
@@ -1052,17 +1055,43 @@ export default function VenomButton(props: Props) {
         }
 
         const frame = (now: number) => {
-            raf = requestAnimationFrame(frame)
+            raf = 0
+            if (!inView || !pageVisible) {
+                prev = -1
+                return
+            }
             draw(now)
+            raf = requestAnimationFrame(frame)
+        }
+        const updateFrameVisibility = () => {
+            if (inView && pageVisible) {
+                if (!raf) raf = requestAnimationFrame(frame)
+            } else {
+                if (raf) cancelAnimationFrame(raf)
+                raf = 0
+                prev = -1
+            }
         }
         const ro = new ResizeObserver(fit)
         ro.observe(stage)
         ro.observe(btn)
+        const intersection = new IntersectionObserver(([entry]) => {
+            inView = entry.isIntersecting
+            updateFrameVisibility()
+        })
+        intersection.observe(stage)
+        const onVisibilityChange = () => {
+            pageVisible = !document.hidden
+            updateFrameVisibility()
+        }
+        const unsubscribePageVisibility = subscribePageVisibility(onVisibilityChange)
         fit()
-        raf = requestAnimationFrame(frame)
+        updateFrameVisibility()
         return () => {
             cancelAnimationFrame(raf)
             ro.disconnect()
+            intersection.disconnect()
+            unsubscribePageVisibility()
             stage.removeEventListener("pointermove", onMove)
             stage.removeEventListener("pointerdown", onDown)
             stage.removeEventListener("pointerleave", onLeave)

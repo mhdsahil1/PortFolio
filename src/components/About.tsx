@@ -53,7 +53,7 @@ export default function About() {
             transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="mt-14 sm:mt-16 pt-8 border-t border-[#E2E0E8] dark:border-[#292630]/60 w-full"
           >
-            <h3 className="font-['IBM_Plex_Mono'] text-[11px] uppercase tracking-widest text-[#868391] dark:text-[#68646D] block mb-4 m-0 font-normal">
+            <h3 className="font-['IBM_Plex_Mono'] text-[11px] uppercase tracking-widest text-[#585563] dark:text-[#A9A5AC] block mb-4 m-0 font-normal">
               DISCIPLINES &amp; FOCUS
             </h3>
 

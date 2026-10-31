@@ -1,5 +1,6 @@
 "use client"
     import { useEffect, useRef, useState } from "react"
+import { subscribePageVisibility } from "@/lib/browser-signals"
     import type { CSSProperties } from "react"
 
     const REF_W = 1200
@@ -1013,7 +1014,7 @@
 
             let raf = 0
             let running = false
-            let visible = true
+            let visible = false
             let pageVisible = !document.hidden
             let last = 0
             let tickCount = 0
@@ -1034,16 +1035,33 @@
             }
             wakeRef.current = wake
 
+            function pause() {
+                running = false
+                if (raf) cancelAnimationFrame(raf)
+                raf = 0
+                last = 0
+                lastRaf = 0
+                gapN = 0
+            }
+
             const io = new IntersectionObserver((es) => {
                 visible = es[0].isIntersecting
-                if (visible) wake()
+                if (visible) {
+                    wake()
+                } else {
+                    pause()
+                }
             })
             io.observe(root)
             const onVis = () => {
                 pageVisible = !document.hidden
-                if (pageVisible) wake()
+                if (pageVisible) {
+                    wake()
+                } else {
+                    pause()
+                }
             }
-            document.addEventListener("visibilitychange", onVis)
+            const unsubscribePageVisibility = subscribePageVisibility(onVis)
 
             const onLost = (e: Event) => {
                 e.preventDefault()
@@ -1550,7 +1568,7 @@
                 ro.disconnect()
                 io.disconnect()
                 mq?.removeEventListener?.("change", onMq)
-                document.removeEventListener("visibilitychange", onVis)
+                unsubscribePageVisibility()
                 document.fonts?.removeEventListener?.("loadingdone", onFontsDone)
                 root.removeEventListener("pointermove", onMove)
                 root.removeEventListener("pointerdown", onDown)

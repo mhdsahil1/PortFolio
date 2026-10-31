@@ -10,6 +10,7 @@
 
 import * as React from "react"
 import { useEffect, useRef } from "react"
+import { subscribePageVisibility } from "@/lib/browser-signals"
 
 /** Tuning values. Stripped at publish; the tuned values are baked in here. */
 const ADVANCED_DEFAULTS = {
@@ -466,10 +467,16 @@ function __OriginkitBase_CerisePlunge(props: CerisePlungeProps) {
         let raf = 0
         let last = 0
         let phase = 0
+        let inView = false
+        let pageVisible = !document.hidden
         let ox = 0, oy = 0, vx = 0, vy = 0, down = 0, dv = 0
 
         const tick = (now: number) => {
-            raf = requestAnimationFrame(tick)
+            raf = 0
+            if (!inView || !pageVisible) {
+                last = 0
+                return
+            }
             const dt = last ? Math.min((now - last) / 1000, 1 / 20) : 0
             last = now
             const p = propsRef.current
@@ -599,12 +606,34 @@ function __OriginkitBase_CerisePlunge(props: CerisePlungeProps) {
             gl.uniform4f(loc.uLook, adv.specular / 100, adv.specPower, adv.reflection / 100, adv.rimDark / 100)
             gl.uniform1f(loc.uTransparent, isTransparent ? 1.0 : 0.0)
             gl.drawArrays(gl.TRIANGLES, 0, 3)
+            raf = requestAnimationFrame(tick)
         }
-        raf = requestAnimationFrame(tick)
+        const updateVisibility = () => {
+            if (inView && pageVisible) {
+                if (!raf) raf = requestAnimationFrame(tick)
+            } else {
+                if (raf) cancelAnimationFrame(raf)
+                raf = 0
+                last = 0
+            }
+        }
+        const intersection = new IntersectionObserver(([entry]) => {
+            inView = entry.isIntersecting
+            updateVisibility()
+        })
+        intersection.observe(root)
+        const onVisibilityChange = () => {
+            pageVisible = !document.hidden
+            updateVisibility()
+        }
+        const unsubscribePageVisibility = subscribePageVisibility(onVisibilityChange)
+        updateVisibility()
 
         return () => {
             cancelAnimationFrame(raf)
             ro.disconnect()
+            intersection.disconnect()
+            unsubscribePageVisibility()
             window.removeEventListener("pointermove", onWindowPointerMove)
             window.removeEventListener("pointerdown", onWindowPointerDown)
             window.removeEventListener("pointerup", release)

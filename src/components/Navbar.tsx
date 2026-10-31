@@ -26,11 +26,20 @@ export default function Navbar(_props: NavbarProps) {
   const reducedMotion = useReducedMotion()
 
   useEffect(() => {
+    let frame = 0
     const handleScroll = () => {
-      setScrolled(window.scrollY > 30)
+      if (frame) return
+      frame = requestAnimationFrame(() => {
+        frame = 0
+        setScrolled(window.scrollY > 30)
+      })
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    handleScroll()
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (frame) cancelAnimationFrame(frame)
+    }
   }, [])
 
   useEffect(() => {
@@ -120,7 +129,7 @@ export default function Navbar(_props: NavbarProps) {
               <span className="font-['Moonhouse',sans-serif] text-xs font-semibold tracking-wider text-[#121114] dark:text-[#F5F2F2]">
                 SAHIL.
               </span>
-              <span className="font-['IBM_Plex_Mono'] text-[11px] text-[#868391] dark:text-[#68646D]">
+              <span className="font-['IBM_Plex_Mono'] text-[11px] text-[#585563] dark:text-[#A9A5AC]">
                 INDEX
               </span>
             </div>

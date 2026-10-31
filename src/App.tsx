@@ -22,6 +22,10 @@ const DigitalCore = ENABLE_3D_MODEL
 export default function App() {
   // Initialize buttery-smooth Lenis inertia scrolling
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return
+    }
+
     const lenis = new Lenis({
       duration: 1.15,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

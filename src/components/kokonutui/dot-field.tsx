@@ -13,6 +13,7 @@
 
 import { type ReactNode, useEffect, useRef } from 'react'
 import { cn } from '@/lib/utils'
+import { subscribePageVisibility } from '@/lib/browser-signals'
 
 export interface DotFieldProps {
   className?: string
@@ -36,8 +37,6 @@ const NOISE_SCALE = 240
 const NOISE_SPEED = 0.07
 // The noise is sampled on every third dot and blended in between.
 const TONE_STEP = 3
-// The idle drift is slow; a frame every 33ms is plenty for it.
-const IDLE_FRAME_MS = 33
 // The membrane. Each dot is pulled back to its rest point (ANCHOR), towards
 // its four neighbours (COUPLING, which makes a disturbance travel as a wave)
 // and loses speed to DAMPING. Units are per second squared.
@@ -464,7 +463,7 @@ export default function DotField({
     ).matches
     const noise = createNoise(seed)
     const gap = Math.max(6, spacing)
-    const size = { width: 0, height: 0, color: '' }
+    const size = { width: 0, height: 0, color: '', left: 0, top: 0 }
     let field = createField(0, 0, gap)
 
     const pointer: Pointer = {
@@ -477,20 +476,21 @@ export default function DotField({
     const shocks: Shock[] = []
     let time = 0
     let last = 0
-    let lastTone = 0
     let carry = 0
     // What the last physics step found. Frames shorter than STEP (144Hz
     // screens) run no step, so they go by this rather than settle early.
     let stirring = false
     let awake = false
     let raf = 0
-    let visible = true
+    let visible = false
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect()
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
       size.width = rect.width
       size.height = rect.height
+      size.left = rect.left
+      size.top = rect.top
       canvas.width = Math.round(size.width * dpr)
       canvas.height = Math.round(size.height * dpr)
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
@@ -525,26 +525,21 @@ export default function DotField({
 
     const frame = (now: number) => {
       raf = 0
-      if (!visible) {
+      if (!visible || reduceMotion) {
         return
       }
       const dt = last ? Math.min((now - last) / 1000, 0.05) : 0
       last = now
       time += dt
-      const wasAwake = awake
+
       if (awake) {
         physics(dt)
+        draw(ctx, field, size, true)
+        raf = requestAnimationFrame(frame)
+      } else {
+        draw(ctx, field, size, false)
+        last = 0
       }
-      const toneDue = now - lastTone >= IDLE_FRAME_MS
-      if (toneDue) {
-        sampleTone(field, noise, time)
-        lastTone = now
-      }
-      // The drift alone gets about 30 frames a second; a wake gets every one.
-      if (wasAwake || toneDue) {
-        draw(ctx, field, size, wasAwake)
-      }
-      raf = requestAnimationFrame(frame)
     }
 
     const start = () => {
@@ -566,7 +561,6 @@ export default function DotField({
     resize()
     draw(ctx, field, size, false)
     canvas.style.opacity = '1'
-    start()
 
     const redraw = () => {
       resize()
@@ -593,10 +587,15 @@ export default function DotField({
 
     // Stop drawing entirely while the field is scrolled away or the tab is
     // in the background.
-    let onScreen = true
+    let onScreen = false
     const updateVisible = () => {
       visible = onScreen && document.visibilityState === 'visible'
       if (visible) {
+        const nextColor = getComputedStyle(canvas).color
+        if (nextColor !== size.color) {
+          size.color = nextColor
+          draw(ctx, field, size, false)
+        }
         start()
       }
     }
@@ -605,26 +604,27 @@ export default function DotField({
       updateVisible()
     })
     intersection.observe(root)
-    document.addEventListener('visibilitychange', updateVisible)
+    const unsubscribePageVisibility = subscribePageVisibility(updateVisible)
 
     // Follow light and dark mode without asking the app for a theme. Only
     // checked while the field is on screen.
-    const colorTimer = window.setInterval(() => {
-      if (!visible) {
-        return
-      }
+    const updateColor = () => {
       const next = getComputedStyle(canvas).color
       if (next !== size.color) {
         size.color = next
-        if (reduceMotion) {
+        if (visible) {
           draw(ctx, field, size, false)
         }
       }
-    }, 500)
+    }
+    const themeObserver = new MutationObserver(updateColor)
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class', 'data-theme'],
+    })
 
     const local = (event: PointerEvent) => {
-      const rect = canvas.getBoundingClientRect()
-      return { x: event.clientX - rect.left, y: event.clientY - rect.top }
+      return { x: event.clientX - size.left, y: event.clientY - size.top }
     }
     const onMove = (event: PointerEvent) => {
       const point = local(event)
@@ -683,8 +683,8 @@ export default function DotField({
       resizeObserver.disconnect()
       dprQuery?.removeEventListener('change', onDpr)
       intersection.disconnect()
-      document.removeEventListener('visibilitychange', updateVisible)
-      window.clearInterval(colorTimer)
+      unsubscribePageVisibility()
+      themeObserver.disconnect()
       if (interactive && !reduceMotion) {
         eventTarget.removeEventListener('pointermove', onMove as EventListener)
         eventTarget.removeEventListener('pointerleave', onLeave as EventListener)

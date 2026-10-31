@@ -99,6 +99,7 @@ export default function MagneticButton({
     <motion.button
       ref={btnRef}
       type="button"
+      aria-label={label}
       onClick={handleClick}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}

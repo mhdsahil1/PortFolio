@@ -373,9 +373,9 @@ function useUserOpen(scrolledPast: boolean) {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [openedAt])
-  if (!scrolledPast && openedAt !== null) {
-    setOpenedAt(null)
-  }
+  useEffect(() => {
+    if (!scrolledPast) setOpenedAt(null)
+  }, [scrolledPast])
   return [openedAt !== null, () => setOpenedAt(window.scrollY)] as const
 }
 

@@ -58,7 +58,7 @@ function PrimaryProjectItem({ project }: { project: Project }) {
 
           {/* Verified Features */}
           {project.features && project.features.length > 0 && (
-            <ul className="mt-5 space-y-1.5 font-['IBM_Plex_Mono'] text-xs text-[#868391] dark:text-[#68646D] max-w-xl">
+            <ul className="mt-5 space-y-1.5 font-['IBM_Plex_Mono'] text-xs text-[#585563] dark:text-[#A9A5AC] max-w-xl">
               {project.features.map((feature) => (
                 <li key={feature} className="flex items-center gap-2">
                   <span className="text-[#E10600] select-none">•</span>
@@ -111,7 +111,7 @@ function PrimaryProjectItem({ project }: { project: Project }) {
               hovered && !reducedMotion ? 'border-[#121114] dark:border-[#3E3A49] -translate-y-1' : ''
             }`}
           >
-            <div className="flex items-center justify-between pb-3 border-b border-[#E2E0E8] dark:border-[#292630] font-['IBM_Plex_Mono'] text-[11px] text-[#868391] dark:text-[#68646D]">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E2E0E8] dark:border-[#292630] font-['IBM_Plex_Mono'] text-[11px] text-[#585563] dark:text-[#A9A5AC]">
               <span>STATUS</span>
               <span className="text-[#121114] dark:text-[#F5F2F2]">
                 {project.liveUrl ? 'PRODUCTION' : 'RESEARCH / LAB'}
@@ -120,17 +120,17 @@ function PrimaryProjectItem({ project }: { project: Project }) {
 
             <div className="py-4 space-y-3 font-['IBM_Plex_Mono'] text-xs">
               <div>
-                <span className="text-[#868391] dark:text-[#68646D] block text-[10px] uppercase">DOMAIN</span>
+                <span className="text-[#585563] dark:text-[#A9A5AC] block text-[10px] uppercase">DOMAIN</span>
                 <span className="text-[#121114] dark:text-[#F5F2F2] font-medium">{project.category}</span>
               </div>
               <div>
-                <span className="text-[#868391] dark:text-[#68646D] block text-[10px] uppercase">PRIMARY TECH</span>
+                <span className="text-[#585563] dark:text-[#A9A5AC] block text-[10px] uppercase">PRIMARY TECH</span>
                 <span className="text-[#585563] dark:text-[#A9A5AC]">{project.technologies.slice(0, 3).join(', ')}</span>
               </div>
             </div>
 
             <div className="pt-3 border-t border-[#E2E0E8] dark:border-[#292630] flex items-center justify-between font-['IBM_Plex_Mono'] text-[11px]">
-              <span className="text-[#868391] dark:text-[#68646D]">ID</span>
+              <span className="text-[#585563] dark:text-[#A9A5AC]">ID</span>
               <span className="text-[#585563] dark:text-[#A9A5AC]">{project.slug}</span>
             </div>
           </div>
@@ -189,7 +189,7 @@ export default function Projects() {
               className="surface-card p-6 flex flex-col justify-between group hover:border-[#121114] dark:hover:border-[#3E3A49] transition-all"
             >
               <div>
-                <div className="flex items-center justify-between pb-3 border-b border-[#E2E0E8] dark:border-[#292630] font-['IBM_Plex_Mono'] text-[11px] text-[#868391] dark:text-[#68646D] mb-4">
+                <div className="flex items-center justify-between pb-3 border-b border-[#E2E0E8] dark:border-[#292630] font-['IBM_Plex_Mono'] text-[11px] text-[#585563] dark:text-[#A9A5AC] mb-4">
                   <span>{project.category}</span>
                   <span>{project.categoryNumber}</span>
                 </div>

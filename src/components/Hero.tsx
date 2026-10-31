@@ -1,17 +1,34 @@
 'use client'
 
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { personalInfo } from '../data/portfolio'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { useTheme } from '../context/ThemeContext'
 import VectorWordmark from './originkit/ui/vector-wordmark'
 import MagneticButton from './ui/MagneticButton'
-import EmberHusk from './originkit/ui/ember-husk'
 import { playClickPop, playHoverTick } from '../utils/sound'
 
+const EmberHusk = lazy(() => import('./originkit/ui/ember-husk'))
+
 export default function Hero() {
+  const [loadEmber, setLoadEmber] = useState(false)
   const reducedMotion = useReducedMotion()
   const { isLight } = useTheme()
+
+  useEffect(() => {
+    let timeoutId: number | undefined
+    let idleId: number | undefined
+    if ('requestIdleCallback' in window) {
+      idleId = window.requestIdleCallback(() => setLoadEmber(true), { timeout: 1200 })
+    } else {
+      timeoutId = setTimeout(() => setLoadEmber(true), 500)
+    }
+    return () => {
+      if (idleId !== undefined) window.cancelIdleCallback(idleId)
+      if (timeoutId !== undefined) clearTimeout(timeoutId)
+    }
+  }, [])
 
   const scrollToWork = () => {
     playClickPop(0.04)
@@ -143,7 +160,7 @@ export default function Hero() {
         >
           {/* Seamless unconstrained 3D viewport with wide bleed buffer and generous spacing from left text */}
           <div className="w-[110%] sm:w-[135%] lg:w-[145%] xl:w-[155%] -left-[5%] sm:-left-[17%] lg:-left-[14%] xl:-left-[16%] lg:translate-x-6 xl:translate-x-10 h-[400px] sm:h-[540px] lg:h-[720px] xl:h-[780px] relative flex items-center justify-center bg-transparent overflow-visible pointer-events-auto">
-            <EmberHusk
+            {loadEmber && <Suspense fallback={null}><EmberHusk
               size={3.2}
               core={{
                 flow: 10,
@@ -168,7 +185,7 @@ export default function Hero() {
                 background: 'transparent',
                 overflow: 'visible',
               }}
-            />
+            /></Suspense>}
           </div>
         </motion.div>
       </div>

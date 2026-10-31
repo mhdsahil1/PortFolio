@@ -1,19 +1,26 @@
 'use client'
 
-import { useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { personalInfo, socialLinks } from '../data/portfolio'
 import { useReducedMotion } from '../hooks/useReducedMotion'
-import VenomButton from './originkit/ui/venom-button'
+
+const VenomButton = lazy(() => import('./originkit/ui/venom-button'))
 
 export default function Contact() {
   const [copied, setCopied] = useState(false)
+  const copyTimer = useRef<number | undefined>(undefined)
   const reducedMotion = useReducedMotion()
+
+  useEffect(() => () => {
+    if (copyTimer.current !== undefined) window.clearTimeout(copyTimer.current)
+  }, [])
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(personalInfo.email)
     setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    if (copyTimer.current !== undefined) window.clearTimeout(copyTimer.current)
+    copyTimer.current = window.setTimeout(() => setCopied(false), 2000)
   }
 
   return (
@@ -62,41 +69,64 @@ export default function Contact() {
             transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="mt-8 sm:mt-10 flex flex-wrap items-center gap-3 sm:gap-4"
           >
-            <VenomButton
-              label="EMAIL ME ↗"
-              size={56}
-              background="transparent"
-              gooColor="#E10600"
-              textColor="#FFFFFF"
-              autoplay={false}
-              onClick={() => {
-                window.location.href = `mailto:${personalInfo.email}`
-              }}
-              font={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "13px",
-                fontWeight: 700,
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-              }}
-            />
+            <Suspense
+              fallback={
+                <a
+                  href={`mailto:${personalInfo.email}`}
+                  className="font-['Inter'] font-bold text-xs uppercase tracking-wider text-white bg-[#E10600] px-6 py-4 rounded-full"
+                >
+                  EMAIL ME ↗
+                </a>
+              }
+            >
+              <VenomButton
+                label="EMAIL ME ↗"
+                size={56}
+                background="transparent"
+                gooColor="#E10600"
+                textColor="#FFFFFF"
+                autoplay={false}
+                onClick={() => {
+                  window.location.href = `mailto:${personalInfo.email}`
+                }}
+                font={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: "13px",
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                }}
+              />
+            </Suspense>
 
-            <VenomButton
-              label={copied ? 'COPIED TO CLIPBOARD' : 'COPY EMAIL'}
-              size={56}
-              background="transparent"
-              gooColor="#E10600"
-              textColor="#FFFFFF"
-              autoplay={false}
-              onClick={handleCopyEmail}
-              font={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "13px",
-                fontWeight: 700,
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-              }}
-            />
+            <Suspense
+              fallback={
+                <button
+                  type="button"
+                  onClick={handleCopyEmail}
+                  className="font-['Inter'] font-bold text-xs uppercase tracking-wider text-[#121114] dark:text-[#F5F2F2] border border-[#E2E0E8] dark:border-[#292630] px-6 py-4 rounded-full"
+                >
+                  {copied ? 'COPIED TO CLIPBOARD' : 'COPY EMAIL'}
+                </button>
+              }
+            >
+              <VenomButton
+                label={copied ? 'COPIED TO CLIPBOARD' : 'COPY EMAIL'}
+                size={56}
+                background="transparent"
+                gooColor="#E10600"
+                textColor="#FFFFFF"
+                autoplay={false}
+                onClick={handleCopyEmail}
+                font={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: "13px",
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                }}
+              />
+            </Suspense>
           </motion.div>
 
           {/* Direct Coordinate Links */}
@@ -134,7 +164,7 @@ export default function Contact() {
               PORTFOLIO ↗
             </a>
 
-            <span className="text-[#868391] dark:text-[#68646D] ml-auto hidden sm:inline">
+            <span className="text-[#585563] dark:text-[#A9A5AC] ml-auto hidden sm:inline">
               MANGALORE, INDIA
             </span>
           </motion.div>

@@ -5,6 +5,7 @@
 import { useEffect, useRef } from "react"
 import type { CSSProperties } from "react"
 import * as THREE from "three"
+import { subscribePageVisibility } from "@/lib/browser-signals"
 
 /* ------------------------------------------------------------------ *
  *  EmberHusk
@@ -1898,14 +1899,22 @@ function OriginkitBaseEmberHusk(props: EmberHuskProps) {
         const ro = new ResizeObserver(resize)
         ro.observe(container)
 
-        let onScreen = true
+        let onScreen = false
+        let pageVisible = !document.hidden
+        let syncAnimationLoop: () => void = () => {}
         const io = new IntersectionObserver(
             (entries) => {
                 onScreen = entries.some((e) => e.isIntersecting)
+                syncAnimationLoop()
             },
             { rootMargin: "200px" }
         )
         io.observe(container)
+        const onVisibilityChange = () => {
+            pageVisible = !document.hidden
+            syncAnimationLoop()
+        }
+        const unsubscribePageVisibility = subscribePageVisibility(onVisibilityChange)
 
         /* ----------------------------------------------------- pointer */
 
@@ -2320,7 +2329,8 @@ function OriginkitBaseEmberHusk(props: EmberHuskProps) {
             renderFrame(t, dt)
         }
 
-        renderer.setAnimationLoop(loop)
+        syncAnimationLoop = () => renderer.setAnimationLoop(onScreen && pageVisible ? loop : null)
+        syncAnimationLoop()
 
         apiRef.current = {
             invalidate: () => {
@@ -2338,6 +2348,7 @@ function OriginkitBaseEmberHusk(props: EmberHuskProps) {
 
             ro.disconnect()
             io.disconnect()
+            unsubscribePageVisibility()
             window.removeEventListener("pointermove", onPointerMove)
             window.removeEventListener("pointerleave", onPointerLeave)
             window.removeEventListener("blur", onPointerLeave)

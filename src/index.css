@@ -158,6 +158,13 @@ html.light,
     contain-intrinsic-size: 1px 700px;
   }
 
+  /* Hardware Accelerated Composited Layer Promotion */
+  .gpu-layer {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: transform, opacity;
+  }
+
   /* Accessibility Skip Link */
   .skip-to-content {
     position: absolute;

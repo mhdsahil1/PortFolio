@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { useEffect, useRef } from "react"
+import { subscribePageVisibility } from "@/lib/browser-signals"
 
 const MAX_DPR = 2 // quality tier, not a design control (rule 10)
 const REF_WIDTH = 1200 // the width the font size is quoted at
@@ -634,6 +635,7 @@ export default function VectorWordmark(props: VectorWordmarkProps) {
         let raf = 0
         let last = 0
         let running = true
+        let inView = false
 
         function sync() {
             const L = live.current
@@ -761,7 +763,7 @@ export default function VectorWordmark(props: VectorWordmarkProps) {
         }
 
         const gate = () => {
-            if (running && !document.hidden) {
+            if (running && inView && !document.hidden) {
                 if (!raf) {
                     last = 0
                     raf = requestAnimationFrame(frame)
@@ -776,7 +778,12 @@ export default function VectorWordmark(props: VectorWordmarkProps) {
             boxDirty = true
         })
         ro.observe(host)
-        document.addEventListener("visibilitychange", gate)
+        const intersection = new IntersectionObserver(([entry]) => {
+            inView = entry.isIntersecting
+            gate()
+        })
+        intersection.observe(host)
+        const unsubscribePageVisibility = subscribePageVisibility(gate)
 
         // Safety net for a family that finishes after the first bake but
         // that document.fonts.check() reported as present.
@@ -794,8 +801,9 @@ export default function VectorWordmark(props: VectorWordmarkProps) {
             running = false
             if (raf) cancelAnimationFrame(raf)
             ro.disconnect()
+            intersection.disconnect()
             host.removeEventListener("pointermove", onMove)
-            document.removeEventListener("visibilitychange", gate)
+            unsubscribePageVisibility()
             // Never loseContext(): getContext returns the same context per
             // canvas, so StrictMode's mount -> cleanup -> mount would reuse a
             // force-lost one and render black (rule 6).
