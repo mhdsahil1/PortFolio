@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react'
 import Lenis from 'lenis'
 import 'lenis/dist/lenis.css'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
@@ -103,6 +104,9 @@ export default function App() {
 
       {/* Interactive Physical Pull-Cord Lamp */}
       <ThemePullCord />
+
+      {/* Vercel Speed Insights */}
+      <SpeedInsights />
     </>
   )
 }
