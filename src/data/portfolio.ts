@@ -1,67 +1,86 @@
 export const personalInfo = {
-  name: 'Sahil',
-  role: 'Computer Science Engineering Student',
-  specialization: 'Cybersecurity',
-  eyebrow: "COLLECTION '26",
-  heroPositioning: 'Securing Systems. Building Software.',
-  supportingPositioning:
-    'Computer science student focused on cybersecurity, software development, networking, and systems.',
+  name: 'Muhammed Sahil',
+  shortName: 'Sahil',
+  title: 'Creative Technologist & Full-Stack Architect',
+  headline: 'Crafting fluid, futuristic digital experiences and high-performance creative systems.',
+  bio: 'I build at the intersection of creative engineering, futuristic aesthetics, and high-performance systems. Driven by fluid physics, kinetic typography, and zero-latency web architecture.',
   description:
-    'I build secure web applications, cybersecurity tools, and software projects while exploring how systems work from the application layer down to the operating system.',
-  roles: [
-    'Cybersecurity Student',
-    'Software Developer',
-    'Security Enthusiast',
-    'Full-Stack Developer',
-  ],
+    'Crafting fluid, futuristic digital experiences and high-performance creative systems where interactive physics and visual engineering converge.',
+  heroPositioning: 'Crafting fluid, futuristic digital experiences and high-performance creative systems.',
+  eyebrow: 'CREATIVE SYSTEMS & INTERACTION',
   email: 'sahilmuhammed112@gmail.com',
+  github: 'https://github.com/mhdsahil1',
+  linkedin: 'https://www.linkedin.com/in/mhdsahil09/',
+  portfolioUrl: 'https://mhdsahil.vercel.app/',
+  location: 'Mangalore, India',
   availableForOpportunities: true,
+  roles: ['Creative Technologist', 'Full-Stack Architect', 'Interaction Engineer'],
+  education: {
+    degree: 'B.Tech Computer Science Engineering',
+    specialization: 'Cyber Security',
+    institution: 'Yenepoya University, Mangalore',
+    years: '2024 – Present',
+  },
 }
+
+export const disciplines = [
+  'CYBERSECURITY',
+  'FULL-STACK',
+  'SYSTEMS',
+  'AI',
+  'OPEN SOURCE',
+]
+
+export const exploration: string[] = [
+  'Cybersecurity',
+  'Operating Systems',
+  'Systems Programming',
+  'Network Security',
+  'Web Engineering',
+]
+
+export type SkillGroup = {
+  category: string
+  items: string[]
+}
+
+export const skillGroups: SkillGroup[] = [
+  {
+    category: 'LANGUAGES',
+    items: ['TypeScript', 'JavaScript', 'Python', 'C', 'C++', 'Dart', 'x86 Assembly'],
+  },
+  {
+    category: 'FRAMEWORKS',
+    items: ['React', 'Next.js', 'FastAPI', 'Flutter'],
+  },
+  {
+    category: 'SYSTEMS & TOOLS',
+    items: ['Linux', 'MongoDB', 'Git', 'GitHub', 'Three.js', 'QEMU'],
+  },
+]
+
+export const skills = skillGroups.map((g) => ({
+  title: g.category,
+  skills: g.items,
+}))
 
 export const philosophy = {
-  eyebrow: 'THE PHILOSOPHY',
+  eyebrow: 'ABOUT',
   heading: 'Building with curiosity. Securing with purpose.',
-  body: 'I learn by building. My interests span cybersecurity, software development, networking, web applications, and low-level systems. I enjoy understanding not only how software works, but also how it can fail and how it can be made more secure.',
+  body: personalInfo.bio,
 }
 
-export type SkillCategory = {
-  title: string
-  skills: string[]
-}
-
-export const skills: SkillCategory[] = [
-  {
-    title: 'Programming',
-    skills: ['C++', 'Python', 'JavaScript', 'Java', 'HTML', 'CSS'],
-  },
-  {
-    title: 'Web Development',
-    skills: ['React', 'Next.js', 'Node.js', 'Express.js', 'Tailwind CSS', 'REST APIs'],
-  },
-  {
-    title: 'Cybersecurity',
-    skills: [
-      'Linux',
-      'Kali Linux',
-      'Nmap',
-      'Metasploit',
-      'Wireshark',
-      'Burp Suite',
-      'Web Security',
-      'Secure Coding',
-      'Vulnerability Scanning',
-      'Networking',
-    ],
-  },
-  {
-    title: 'Databases & Tools',
-    skills: ['MongoDB', 'SQL', 'Git', 'GitHub', 'VS Code', 'Docker', 'WSL', 'VMware', 'Vercel'],
-  },
+export const stats = [
+  { value: '4+', label: 'Featured Systems' },
+  { value: '2', label: 'Security Internships' },
+  { value: '01', label: 'Unified Core' },
 ]
 
 export type Project = {
   slug: string
   title: string
+  category: string
+  categoryNumber: string
   subtitle?: string
   description: string
   technologies: string[]
@@ -72,105 +91,128 @@ export type Project = {
   educational?: boolean
 }
 
-export const projects: Project[] = [
+export const primaryProjects: Project[] = [
   {
     slug: 'xerova',
     title: 'Xerova',
-    subtitle: 'Cybersecurity Intelligence Platform',
+    category: 'SECURITY',
+    categoryNumber: '01',
+    subtitle: 'Threat Intelligence Platform',
     description:
-      'A security-focused platform designed to bring cybersecurity intelligence and security workflows into a centralized interface.',
-    technologies: [
-      'Next.js',
-      'React',
-      'TypeScript',
-      'MongoDB',
-      'Node.js',
-      'Cybersecurity APIs',
-      'Authentication',
+      'Cybersecurity threat-intelligence platform for IOC investigation, malicious URL analysis, phishing detection, and security research.',
+    technologies: ['TypeScript', 'Next.js', 'MongoDB', 'Auth.js', 'Groq', 'Gemini AI'],
+    features: [
+      '22+ integrated threat intelligence engines',
+      'Autonomous IOC extraction and threat reasoning',
+      'Deep malicious URL, phishing & homograph analysis',
+      'SSRF protection and input validation',
     ],
     liveUrl: 'https://xerova-lab.vercel.app/',
     githubUrl: 'https://github.com/mhdsahil1/Xerova',
     featured: true,
   },
   {
+    slug: 'nyota-os',
+    title: 'Nyota OS',
+    category: 'SYSTEMS',
+    categoryNumber: '02',
+    subtitle: 'Experimental Operating System',
+    description:
+      'Experimental operating system exploring bootloaders, x86, kernel development, memory, hardware interaction, and IPC.',
+    technologies: ['C', 'x86 Assembly', 'QEMU', 'NASM', 'Make'],
+    features: [
+      'Custom stage-2 bootloader',
+      'i386 Protected mode & segmentation (GDT)',
+      'IDT and PIC interrupt vectoring',
+      'QEMU virtual hardware emulation',
+    ],
+    githubUrl: 'https://github.com/mhdsahil1/Nyota-OS',
+    featured: true,
+  },
+  {
     slug: 'zline',
     title: 'Zline',
-    subtitle: 'Secure Real-Time Chat Application',
+    category: 'COMMUNICATION',
+    categoryNumber: '03',
+    subtitle: 'Encrypted Real-Time Platform',
     description:
-      'A full-stack real-time messaging platform focused on secure communication, modern messaging features, and end-to-end encryption.',
-    technologies: [
-      'Next.js',
-      'React',
-      'Node.js',
-      'MongoDB',
-      'Socket.IO',
-      'WebSockets',
-      'NextAuth',
-      'End-to-End Encryption',
-    ],
+      'Real-time communication platform with messaging, media, calls, group calls, reactions, and end-to-end encryption.',
+    technologies: ['TypeScript', 'WebRTC', 'Socket.IO', 'React', 'MongoDB'],
     features: [
-      'Real-time messaging',
-      'End-to-end encryption',
-      'Message reactions',
-      'Read receipts',
-      'Message editing',
-      'Message deletion',
-      'File sharing',
-      'Media previews',
-      'Calling',
-      'Group communication',
+      'Sender Key end-to-end encryption protocol',
+      'Low-latency full-duplex socket signaling',
+      'WebRTC audio and video calling',
+      'Media preview & encrypted attachments',
     ],
     liveUrl: 'https://zline.vercel.app/',
     githubUrl: 'https://github.com/mhdsahil1/Zline',
     featured: true,
   },
   {
-    slug: 'nyota-os',
-    title: 'Nyota OS',
-    subtitle: 'Experimental Hobby Operating System',
+    slug: 'zestora',
+    title: 'Zestora',
+    category: 'ECOMMERCE',
+    categoryNumber: '04',
+    subtitle: 'Full-Stack E-Commerce',
     description:
-      'A hobby operating system built from scratch to explore boot processes, low-level programming, kernel development, hardware interaction, and operating-system fundamentals.',
-    technologies: ['C', 'Assembly', 'NASM', 'GCC', 'GNU LD', 'Make', 'QEMU', 'Linux / WSL'],
+      'Full-stack e-commerce platform with authentication, admin tools, payments, inventory, and order management.',
+    technologies: ['TypeScript', 'Next.js', 'MongoDB', 'Razorpay', 'Tailwind CSS'],
     features: [
-      'Bootable disk image',
-      'Boot process',
-      'Low-level programming',
-      'Kernel experimentation',
-      'QEMU testing',
-      'Operating-system fundamentals',
+      'Role-based administration and dashboard',
+      'HMAC-SHA256 Razorpay payment pipeline',
+      'Atomic inventory reservation with rollback',
+      'Strict Zod schema validation guards',
     ],
-    githubUrl: 'https://github.com/mhdsahil1/Nyota-OS'
+    liveUrl: 'https://zestoraspices.vercel.app/',
+    githubUrl: 'https://github.com/mhdsahil1/Zestora',
+    featured: true,
+  },
+]
+
+export const secondaryProjects: Project[] = [
+  {
+    slug: 'ball-on',
+    title: 'Ball-On',
+    category: 'DATA & ML',
+    categoryNumber: '05',
+    subtitle: 'Football Transfer Intelligence & Valuation',
+    description:
+      'A collaborative football intelligence platform built to analyze player value, transfer activity, and football data using data-driven valuation techniques.',
+    technologies: ['Next.js', 'React', 'TypeScript', 'Python', 'FastAPI', 'SQLite'],
+    liveUrl: 'https://ball-on.vercel.app/',
+    githubUrl: 'https://github.com/MohammadAsheel/Ball-On',
   },
   {
     slug: 'vulnerability-scanner',
     title: 'Vulnerability Scanner',
+    category: 'SECURITY TOOL',
+    categoryNumber: '06',
+    subtitle: 'Network Reconnaissance & Port Auditing',
     description:
-      'A Python-based cybersecurity tool for network reconnaissance, port scanning, and basic web security assessment.',
-    technologies: ['Python', 'Socket Programming', 'HTTP', 'Networking'],
-    features: ['TCP port scanning', 'Network reconnaissance', 'Web scanning', 'Structured scan output'],
-    githubUrl: 'https://github.com/mhdsahil1/Vulnerability-Scanner'
+      'A Python-based cybersecurity tool for network reconnaissance, multithreaded TCP port scanning, service banner grabbing, and web security vulnerability assessment.',
+    technologies: ['Python', 'Socket Programming', 'HTTP', 'Networking', 'Concurrency'],
+    githubUrl: 'https://github.com/mhdsahil1/Vulnerability-Scanner',
   },
   {
     slug: 'secure-coding-review',
     title: 'Secure Coding Review',
+    category: 'SECURITY RESEARCH',
+    categoryNumber: '07',
+    subtitle: 'Vulnerability Analysis & Defensive Implementations',
     description:
-      'An educational security project demonstrating common web application vulnerabilities and practical mitigation techniques.',
-    technologies: ['Python', 'Flask', 'SQL', 'Web Security'],
-    features: [
-      'SQL Injection',
-      'Cross-Site Scripting',
-      'Command Injection',
-      'Secure implementations',
-      'Security mitigation techniques',
-    ],
-    
+      'An educational cybersecurity project demonstrating exploitation vectors and hardened mitigation patterns for OWASP Top 10 vulnerabilities.',
+    technologies: ['Python', 'Flask', 'SQL', 'Web Security', 'OWASP'],
     educational: true,
   },
 ]
 
+// All projects combined for backwards compatibility
+export const projects: Project[] = [...primaryProjects, ...secondaryProjects]
+
 export type ExperienceEntry = {
   organization: string
   role: string
+  period: string
   description: string
   areas: string[]
   dates: string
@@ -178,12 +220,22 @@ export type ExperienceEntry = {
 
 export const experience: ExperienceEntry[] = [
   {
+    organization: 'ACMEGRADE × IIT Delhi Rendezvous',
+    role: 'Cyber Security Intern',
+    period: '2026 – Present',
+    description:
+      'Engaged in hands-on cybersecurity practices, threat research, and defensive security workflows.',
+    areas: ['Cybersecurity', 'Threat Analysis', 'Network Security'],
+    dates: '2026 – Present',
+  },
+  {
     organization: 'CodeAlpha',
-    role: 'Cybersecurity Intern',
+    role: 'Cyber Security Intern',
+    period: '2026',
     description:
       'Worked on practical cybersecurity assignments involving vulnerability analysis, secure coding, web application security, and security-focused development.',
-    areas: ['Vulnerability analysis', 'Secure coding', 'Web security', 'Security testing', 'Cybersecurity projects'],
-    dates: 'Aug 2026 ',
+    areas: ['Vulnerability analysis', 'Secure coding', 'Web security', 'Security testing'],
+    dates: '2026',
   },
 ]
 
@@ -194,55 +246,46 @@ export type EducationEntry = {
   score?: string
 }
 
-export const education: EducationEntry[] = [
+export type ModernEducationEntry = {
+  degree: string
+  field: string
+  institution: string
+  period: string
+  score?: string
+}
+
+export const educationList: ModernEducationEntry[] = [
+  {
+    degree: 'B.Tech Computer Science Engineering',
+    field: 'Specialization: Cyber Security',
+    institution: 'Yenepoya University, Mangalore',
+    period: '2024 – Present',
+  },
+]
+
+export type LegacyEducation = EducationEntry
+
+// Legacy education export for backwards compatibility
+export const education: LegacyEducation[] = [
   {
     title: 'Bachelor of Technology',
     subtitle: 'Computer Science Engineering — Cybersecurity',
     meta: ['Yenepoya University', 'Mangalore', '2024 - present'],
+    score: 'Enrolled',
   },
-  {
-    title: '2nd PUC',
-    subtitle: 'PCMB',
-    meta: [],
-    score: '494 / 600',
-  },
-  {
-    title: 'SSLC',
-    meta: [],
-    score: '592 / 625',
-  },
-]
-
-export const exploration = [
-  'Cybersecurity',
-  'Web Application Security',
-  'Networking',
-  'Operating Systems',
-  'Secure Software Development',
-  'Data Structures & Algorithms',
-]
-
-export const stats = [
-  { value: '4+', label: 'Featured Projects' },
-  { value: '1', label: 'Cybersecurity Internship' },
-  { value: '∞', label: 'Things Still Being Learned' },
 ]
 
 export const socialLinks = {
   github: 'https://github.com/mhdsahil1',
   linkedin: 'https://www.linkedin.com/in/mhdsahil09/',
   email: personalInfo.email,
+  portfolio: 'https://mhdsahil.vercel.app/',
 }
 
 export const navLinks = [
-  { label: 'Home', href: '#home' },
+  { label: 'Work', href: '#projects' },
   { label: 'About', href: '#about' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Projects', href: '#projects' },
   { label: 'Experience', href: '#experience' },
-  { label: 'Education', href: '#education' },
+  { label: 'Skills', href: '#skills' },
   { label: 'Contact', href: '#contact' },
 ]
-
-export const HLS_SRC =
-  'https://stream.mux.com/Aa02T7oM1wH5Mk5EEVDYhbZ1ChcdhRsS2m1NYyx4Ua1g.m3u8'

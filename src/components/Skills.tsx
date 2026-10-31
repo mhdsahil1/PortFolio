@@ -1,40 +1,77 @@
+'use client'
+
 import { motion } from 'framer-motion'
-import { skills } from '../data/portfolio'
+import { skillGroups } from '../data/portfolio'
+import { useReducedMotion } from '../hooks/useReducedMotion'
 
 export default function Skills() {
+  const reducedMotion = useReducedMotion()
+
   return (
-    <section id="skills" className="relative px-6 py-28 md:py-40">
-      <div className="mx-auto max-w-6xl">
-        <div className="flex flex-col items-start gap-2">
-          <span className="text-xs uppercase tracking-[0.3em] text-muted">
-            SKILLS &amp; TECHNOLOGIES
-          </span>
-          <h2 className="font-display italic text-3xl md:text-5xl">What I Work With</h2>
+    <section
+      id="skills"
+      className="relative py-28 sm:py-36 px-5 sm:px-8 md:px-12 max-w-[1240px] mx-auto z-10 border-t border-[#E2E0E8] dark:border-[#292630]/60 cv-auto"
+    >
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14">
+        {/* Left Column: Section Marker */}
+        <div className="lg:col-span-3">
+          <motion.h2
+            initial={{ opacity: 0, y: reducedMotion ? 0 : 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="flex items-center gap-2 font-['IBM_Plex_Mono'] text-xs uppercase tracking-widest text-[#585563] dark:text-[#A9A5AC] m-0"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#F32E35]" />
+            <span>04 / SKILLS</span>
+          </motion.h2>
         </div>
 
-        <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2">
-          {skills.map((category, i) => (
-            <motion.div
-              key={category.title}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="gradient-border rounded-2xl border border-stroke bg-surface p-6 md:p-8"
-            >
-              <h3 className="text-sm uppercase tracking-[0.2em] text-muted">{category.title}</h3>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {category.skills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="rounded-full border border-stroke bg-bg px-3 py-1.5 text-xs md:text-sm text-text-primary transition-colors duration-200 hover:border-white/20"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
-          ))}
+        {/* Right Column: Clean Typography Columns */}
+        <div className="lg:col-span-9 flex flex-col items-start w-full">
+          <motion.div
+            initial={{ opacity: 0, y: reducedMotion ? 0 : 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="mb-14 sm:mb-16"
+          >
+            <h3 className="font-['Bebas_Neue'] uppercase text-4xl sm:text-5xl text-[#121114] dark:text-[#F5F2F2] tracking-tight leading-none mb-2 font-normal">
+              TECHNICAL PROFICIENCY
+            </h3>
+            <p className="font-['Inter'] text-sm sm:text-base text-[#585563] dark:text-[#A9A5AC]">
+              Systems programming, application architecture, and security toolchains.
+            </p>
+          </motion.div>
+
+          {/* 3 Typography Columns with generous whitespace */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-12 w-full">
+            {skillGroups.map((group, idx) => (
+              <motion.div
+                key={group.category}
+                initial={{ opacity: 0, y: reducedMotion ? 0 : 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                className="flex flex-col items-start"
+              >
+                <h4 className="font-['IBM_Plex_Mono'] text-xs uppercase tracking-widest text-[#868391] dark:text-[#68646D] mb-5 block font-normal m-0">
+                  {group.category}
+                </h4>
+
+                <ul className="space-y-3 font-['Inter'] text-base sm:text-lg text-[#121114] dark:text-[#F5F2F2]">
+                  {group.items.map((item) => (
+                    <li
+                      key={item}
+                      className="hover:text-[#E10600] transition-colors cursor-default"
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

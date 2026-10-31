@@ -1,104 +1,247 @@
+'use client'
+
+import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { projects } from '../data/portfolio'
-import type { Project } from '../data/portfolio'
+import { primaryProjects, secondaryProjects, type Project } from '../data/portfolio'
+import { useReducedMotion } from '../hooks/useReducedMotion'
+import { useTheme } from '../context/ThemeContext'
+import MagneticButton from './ui/MagneticButton'
 
-function ProjectCard({ project, index }: { project: Project; index: number }) {
+function PrimaryProjectItem({ project }: { project: Project }) {
+  const [hovered, setHovered] = useState(false)
+  const reducedMotion = useReducedMotion()
+  const { isLight } = useTheme()
+
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.5, delay: (index % 3) * 0.08 }}
-      className={`group gradient-border relative flex flex-col overflow-hidden rounded-2xl border border-stroke bg-surface ${
-        project.featured ? 'md:col-span-2' : ''
-      }`}
+    <article
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="group relative py-16 sm:py-24 border-b border-[#E2E0E8] dark:border-[#292630]/60 last:border-b-0 transition-colors"
     >
-      {/* Preview area */}
-      <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-stroke/60 to-bg md:h-56">
-        <div className="absolute inset-0 flex items-center justify-center font-display italic text-4xl text-muted/40 transition-transform duration-500 group-hover:scale-105">
-          {project.title}
-        </div>
-        <div className="absolute inset-0 bg-bg/0 backdrop-blur-0 transition-all duration-500 group-hover:bg-bg/40 group-hover:backdrop-blur-sm" />
-      </div>
-
-      <div className="flex flex-1 flex-col gap-4 p-6 md:p-8">
-        <div>
-          {project.educational && (
-            <span className="mb-2 inline-block rounded-full border border-stroke px-2.5 py-0.5 text-[10px] uppercase tracking-[0.2em] text-muted">
-              Educational Project
-            </span>
-          )}
-          <h3 className="font-display italic text-2xl md:text-3xl">{project.title}</h3>
-          {project.subtitle && <p className="mt-1 text-sm text-muted">{project.subtitle}</p>}
-        </div>
-
-        <p className="text-sm leading-relaxed text-muted">{project.description}</p>
-
-        {project.features && (
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-muted">
-            {project.features.slice(0, 6).map((feature) => (
-              <li key={feature} className="flex items-center gap-1.5">
-                <span className="h-1 w-1 shrink-0 rounded-full bg-muted" />
-                {feature}
-              </li>
-            ))}
-          </ul>
-        )}
-
-        <div className="mt-auto flex flex-wrap gap-2 pt-2">
-          {project.technologies.map((tech) => (
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
+        {/* Left: Metadata & Project Heading */}
+        <div className="lg:col-span-8 flex flex-col items-start text-left">
+          {/* Category Number & Name */}
+          <div className="flex items-center gap-2 mb-3 font-['IBM_Plex_Mono'] text-xs uppercase tracking-widest text-[#585563] dark:text-[#A9A5AC]">
             <span
-              key={tech}
-              className="rounded-full border border-stroke bg-bg px-2.5 py-1 text-[11px] text-muted"
-            >
-              {tech}
+              className={`w-1.5 h-1.5 rounded-full transition-colors duration-200 ${
+                hovered ? 'bg-[#E10600]' : 'bg-[#868391] dark:bg-[#68646D]'
+              }`}
+            />
+            <span>
+              {project.categoryNumber} / {project.category}
             </span>
-          ))}
+          </div>
+
+          {/* Large Project Title */}
+          <div className="relative my-1">
+            <h4
+              className={`font-['Bebas_Neue'] uppercase text-5xl sm:text-7xl md:text-8xl tracking-tight leading-[0.88] text-[#121114] dark:text-[#F5F2F2] transition-transform duration-200 select-none font-normal ${
+                hovered && !reducedMotion ? 'translate-x-2' : ''
+              }`}
+            >
+              {project.title}
+            </h4>
+          </div>
+
+          {/* Subtitle if available */}
+          {project.subtitle && (
+            <p className="mt-2 font-['IBM_Plex_Mono'] text-xs uppercase tracking-wider text-[#E10600]">
+              {project.subtitle}
+            </p>
+          )}
+
+          {/* Clean Description */}
+          <p className="mt-4 max-w-2xl font-['Inter'] text-base sm:text-lg text-[#585563] dark:text-[#A9A5AC] leading-relaxed">
+            {project.description}
+          </p>
+
+          {/* Verified Features */}
+          {project.features && project.features.length > 0 && (
+            <ul className="mt-5 space-y-1.5 font-['IBM_Plex_Mono'] text-xs text-[#868391] dark:text-[#68646D] max-w-xl">
+              {project.features.map((feature) => (
+                <li key={feature} className="flex items-center gap-2">
+                  <span className="text-[#E10600] select-none">•</span>
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {/* Tech Stack */}
+          <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1.5 font-['IBM_Plex_Mono'] text-xs text-[#121114] dark:text-[#F5F2F2]">
+            {project.technologies.map((tech, idx) => (
+              <span key={tech} className="flex items-center gap-3">
+                <span className="text-[#585563] dark:text-[#A9A5AC]">{tech}</span>
+                {idx < project.technologies.length - 1 && (
+                  <span className="text-[#D4D1DC] dark:text-[#292630] select-none">·</span>
+                )}
+              </span>
+            ))}
+          </div>
+
+          {/* Project CTAs */}
+          <div className="mt-8 flex flex-wrap items-center gap-4">
+            {project.liveUrl && (
+              <MagneticButton
+                label="VIEW PROJECT ↗"
+                size={44}
+                color="#E10600"
+                textColor="#FFFFFF"
+                onClick={() => window.open(project.liveUrl, '_blank', 'noopener,noreferrer')}
+              />
+            )}
+
+            {project.githubUrl && (
+              <MagneticButton
+                label="SOURCE CODE ↗"
+                size={44}
+                color={isLight ? "#121114" : "#020203"}
+                textColor={isLight ? "#FFFFFF" : "#F5F2F2"}
+                onClick={() => window.open(project.githubUrl, '_blank', 'noopener,noreferrer')}
+              />
+            )}
+          </div>
         </div>
 
-        <div className="mt-4 flex gap-3">
-          {project.githubUrl && (
-            <a
-              href={project.githubUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-full border border-stroke px-4 py-2 text-xs font-medium text-text-primary transition-colors hover:border-white/30"
-            >
-              GitHub
-            </a>
-          )}
-          {project.liveUrl && (
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-full bg-text-primary px-4 py-2 text-xs font-medium text-bg transition-transform duration-300 hover:scale-105"
-            >
-              Live Demo ↗
-            </a>
-          )}
+        {/* Right: Architectural Summary Card */}
+        <div className="lg:col-span-4 w-full">
+          <div
+            className={`surface-card p-6 rounded-xl transition-all duration-300 ${
+              hovered && !reducedMotion ? 'border-[#121114] dark:border-[#3E3A49] -translate-y-1' : ''
+            }`}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-[#E2E0E8] dark:border-[#292630] font-['IBM_Plex_Mono'] text-[11px] text-[#868391] dark:text-[#68646D]">
+              <span>STATUS</span>
+              <span className="text-[#121114] dark:text-[#F5F2F2]">
+                {project.liveUrl ? 'PRODUCTION' : 'RESEARCH / LAB'}
+              </span>
+            </div>
+
+            <div className="py-4 space-y-3 font-['IBM_Plex_Mono'] text-xs">
+              <div>
+                <span className="text-[#868391] dark:text-[#68646D] block text-[10px] uppercase">DOMAIN</span>
+                <span className="text-[#121114] dark:text-[#F5F2F2] font-medium">{project.category}</span>
+              </div>
+              <div>
+                <span className="text-[#868391] dark:text-[#68646D] block text-[10px] uppercase">PRIMARY TECH</span>
+                <span className="text-[#585563] dark:text-[#A9A5AC]">{project.technologies.slice(0, 3).join(', ')}</span>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-[#E2E0E8] dark:border-[#292630] flex items-center justify-between font-['IBM_Plex_Mono'] text-[11px]">
+              <span className="text-[#868391] dark:text-[#68646D]">ID</span>
+              <span className="text-[#585563] dark:text-[#A9A5AC]">{project.slug}</span>
+            </div>
+          </div>
         </div>
       </div>
-    </motion.article>
+    </article>
   )
 }
 
 export default function Projects() {
-  return (
-    <section id="projects" className="relative px-6 py-28 md:py-40">
-      <div className="mx-auto max-w-6xl">
-        <div className="flex flex-col items-start gap-2">
-          <span className="text-xs uppercase tracking-[0.3em] text-muted">SELECTED WORK</span>
-          <h2 className="font-display italic text-3xl md:text-5xl">Featured Projects</h2>
-          <p className="mt-4 max-w-xl text-sm md:text-base text-muted">
-            A selection of projects built across cybersecurity, software development, web
-            applications, and systems.
-          </p>
-        </div>
+  const reducedMotion = useReducedMotion()
 
-        <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2">
-          {projects.map((project, i) => (
-            <ProjectCard key={project.slug} project={project} index={i} />
+  return (
+    <section
+      id="projects"
+      className="relative py-28 sm:py-36 px-5 sm:px-8 md:px-12 max-w-[1240px] mx-auto z-10 border-t border-[#E2E0E8] dark:border-[#292630]/60"
+    >
+      {/* Section Header */}
+      <motion.div
+        initial={{ opacity: 0, y: reducedMotion ? 0 : 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="flex flex-col items-start gap-2 mb-12 sm:mb-16"
+      >
+        <h2 className="flex items-center gap-2 font-['IBM_Plex_Mono'] text-xs uppercase tracking-widest text-[#585563] dark:text-[#A9A5AC] m-0">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#F32E35]" />
+          <span>02 / SELECTED WORK</span>
+        </h2>
+        <h3 className="font-['Bebas_Neue'] uppercase text-5xl sm:text-6xl md:text-7xl text-[#121114] dark:text-[#F5F2F2] tracking-tight text-left leading-[0.9] select-none my-1 font-normal">
+          FEATURED SYSTEMS
+        </h3>
+        <p className="font-['Inter'] text-base text-[#585563] dark:text-[#A9A5AC] max-w-xl text-left leading-relaxed">
+          Security-focused software, low-level operating system experiments, and modern full-stack platforms.
+        </p>
+      </motion.div>
+
+      {/* Main Large Editorial Projects */}
+      <div className="flex flex-col">
+        {primaryProjects.map((project) => (
+          <PrimaryProjectItem key={project.slug} project={project} />
+        ))}
+      </div>
+
+      {/* More Work Section */}
+      <div className="mt-24 sm:mt-32 pt-16 border-t border-[#E2E0E8] dark:border-[#292630]/60">
+        <h3 className="flex items-center gap-2 mb-8 font-['IBM_Plex_Mono'] text-xs uppercase tracking-widest text-[#585563] dark:text-[#A9A5AC] font-normal m-0">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#868391] dark:bg-[#68646D]" />
+          <span>ADDITIONAL RESEARCH &amp; TOOLING</span>
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {secondaryProjects.map((project) => (
+            <div
+              key={project.slug}
+              className="surface-card p-6 flex flex-col justify-between group hover:border-[#121114] dark:hover:border-[#3E3A49] transition-all"
+            >
+              <div>
+                <div className="flex items-center justify-between pb-3 border-b border-[#E2E0E8] dark:border-[#292630] font-['IBM_Plex_Mono'] text-[11px] text-[#868391] dark:text-[#68646D] mb-4">
+                  <span>{project.category}</span>
+                  <span>{project.categoryNumber}</span>
+                </div>
+
+                <h4 className="font-['Inter'] font-semibold text-lg text-[#121114] dark:text-[#F5F2F2] mb-1 group-hover:text-[#E10600] dark:group-hover:text-white transition-colors">
+                  {project.title}
+                </h4>
+
+                {project.subtitle && (
+                  <p className="font-['IBM_Plex_Mono'] text-xs text-[#F32E35] mb-3">
+                    {project.subtitle}
+                  </p>
+                )}
+
+                <p className="font-['Inter'] text-sm text-[#585563] dark:text-[#A9A5AC] leading-relaxed mb-6">
+                  {project.description}
+                </p>
+
+                <div className="flex flex-wrap gap-1.5 mb-6">
+                  {project.technologies.map((t) => (
+                    <span key={t} className="tech-tag text-[10px]">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-[#E2E0E8] dark:border-[#292630] flex items-center gap-4">
+                {project.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="editorial-link"
+                  >
+                    <span>LAUNCH</span>
+                    <span>↗</span>
+                  </a>
+                )}
+                {project.githubUrl && (
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="editorial-link"
+                  >
+                    <span>SOURCE</span>
+                    <span>↗</span>
+                  </a>
+                )}
+              </div>
+            </div>
           ))}
         </div>
       </div>

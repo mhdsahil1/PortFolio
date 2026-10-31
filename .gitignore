@@ -1,4 +1,62 @@
+# Dependencies
 node_modules
+/.pnp
+.pnp.js
+
+# Production build artifacts
 dist
-.DS_Store
+dist-ssr
+*.local
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+
+# TokenCap intelligence cache
+.tokencap/
+
+# Architecture & experimental archives
+archive/
+assets_archive/
+assets-archive/
+assets archive/
+**/assets_archive/**
+**/assets-archive/**
+**/assets archive/**
+
+# Large 3D binary models & heavy media archives
+*.glb
+*.gltf
+
+# OriginKit cache
+.originkit/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
 *.log
+
+# Editor & IDE directories
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# TypeScript build cache
+*.tsbuildinfo
+node_modules/.tmp/

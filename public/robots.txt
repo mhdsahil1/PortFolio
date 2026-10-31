@@ -1,0 +1,12 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Disallow: /archive/
+Disallow: /assets_archive/
+
+# Host
+Host: https://mhdsahil.vercel.app
+
+# Sitemaps
+Sitemap: https://mhdsahil.vercel.app/sitemap.xml
+

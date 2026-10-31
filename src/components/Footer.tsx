@@ -1,75 +1,95 @@
-import { useHlsVideo } from '../hooks/useHlsVideo'
-import { personalInfo, socialLinks, HLS_SRC } from '../data/portfolio'
-import Marquee from './Marquee'
+'use client'
+
+import { personalInfo } from '../data/portfolio'
+import { useReducedMotion } from '../hooks/useReducedMotion'
+import { useTheme } from '../context/ThemeContext'
+import VelourBolster from './originkit/ui/velour-bolster'
+import Gravitygloss from './originkit/ui/gravitygloss'
 
 export default function Footer() {
-  const { videoRef, failed, ready } = useHlsVideo(HLS_SRC)
-  const year = new Date().getFullYear()
+  const currentYear = new Date().getFullYear()
+  const reducedMotion = useReducedMotion()
+  const { isLight } = useTheme()
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' })
+  }
 
   return (
-    <footer className="relative overflow-hidden border-t border-stroke">
-      <Marquee />
-
-      <div className="relative px-6 py-20 md:py-28">
-        <div className="absolute inset-0 -z-10 bg-bg">
-          {!failed && (
-            <video
-              ref={videoRef}
-              className={`h-full w-full object-cover transition-opacity duration-1000 ${
-                ready ? 'opacity-15' : 'opacity-0'
-              }`}
-              style={{ transform: 'scaleY(-1)' }}
-              autoPlay
-              muted
-              loop
-              playsInline
-              aria-hidden="true"
-            />
-          )}
-          <div className="absolute inset-0 bg-bg/85" />
+    <footer className="relative py-12 px-5 sm:px-8 md:px-12 max-w-[1240px] mx-auto z-10 border-t border-[#E2E0E8] dark:border-[#292630]/60 font-['IBM_Plex_Mono'] text-xs text-[#868391] dark:text-[#68646D]">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <span className="text-[#585563] dark:text-[#A9A5AC] uppercase tracking-wider font-semibold">
+            {personalInfo.name.toUpperCase()}
+          </span>
+          <span className="mx-2 text-[#D4D1DC] dark:text-[#292630]">/</span>
+          <span>© {currentYear}</span>
         </div>
 
-        <div className="mx-auto flex max-w-6xl flex-col gap-10 md:flex-row md:items-end md:justify-between">
-          <div>
-            <div className="font-display italic text-2xl">S.</div>
-            <p className="mt-2 text-sm text-muted">© {year} {personalInfo.name}</p>
-            {personalInfo.availableForOpportunities && (
-              <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-stroke px-3 py-1.5 text-xs text-muted">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#4E85BF] opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full accent-gradient" />
-                </span>
-                Available for opportunities
-              </div>
-            )}
+        <div className="flex items-center gap-6">
+          <div className="w-[180px] h-[64px] relative inline-flex items-center justify-center">
+            <VelourBolster
+              text="BACK TO TOP ↑"
+              fabric={isLight ? "#121114" : "#17151D"}
+              textColor={isLight ? "#FFFFFF" : "#F5F2F2"}
+              background="transparent"
+              buttonWidth={900}
+              buttonHeight={380}
+              radius={190}
+              font={{
+                fontFamily: "'IBM Plex Mono', monospace",
+                fontWeight: 600,
+                letterSpacing: "0.06em",
+              }}
+              drift={reducedMotion ? 0 : 4}
+              response={{
+                puff: 6,
+                bulge: 6,
+                press: 6,
+                wobble: 6,
+                drag: 5,
+                ripple: 6,
+                release: 0.8,
+              }}
+              onClick={scrollToTop}
+              style={{
+                width: '100%',
+                height: '100%',
+                aspectRatio: 'auto',
+              }}
+            />
           </div>
+        </div>
+      </div>
 
-          <nav aria-label="Social links" className="flex gap-6 text-sm">
-            <a
-              href={socialLinks.github !== '[ADD GITHUB URL]' ? socialLinks.github : undefined}
-              target="_blank"
-              rel="noreferrer"
-              className="text-muted transition-colors hover:text-text-primary"
-            >
-              GitHub
-            </a>
-            <a
-              href={socialLinks.linkedin !== '[ADD LINKEDIN]' ? socialLinks.linkedin : undefined}
-              target="_blank"
-              rel="noreferrer"
-              className="text-muted transition-colors hover:text-text-primary"
-            >
-              LinkedIn
-            </a>
-            <a
-              href={
-                personalInfo.email !== '[ADD EMAIL]' ? `mailto:${personalInfo.email}` : undefined
-              }
-              className="text-muted transition-colors hover:text-text-primary"
-            >
-              Email
-            </a>
-          </nav>
+      {/* Interactive Gravitygloss Showcase at Footer End - Unconstrained full-width animation stage */}
+      <div className="mt-14 sm:mt-20 mb-6 w-screen relative left-1/2 -translate-x-1/2 flex flex-col items-center justify-center select-none overflow-visible pointer-events-auto">
+        <div className="w-full h-[500px] sm:h-[620px] md:h-[720px] relative flex items-center justify-center overflow-visible">
+          <Gravitygloss
+            text={"THANK\nYOU"}
+            textColor={isLight ? "#121114" : "#FFFFFF"}
+            sphereColor="#FFA500"
+            sphereShade="#FFAE34"
+            size={135}
+            pull={55}
+            speed={reducedMotion ? 0 : 35}
+            background="transparent"
+            font={{
+              fontFamily: "'Anton', 'Impact', sans-serif",
+              fontWeight: 800,
+              fontSize: 185,
+            }}
+            advanced={{
+              angle: 30,
+              perspective: 70,
+              stretch: 126,
+              reach: 480,
+              hover: 92,
+              sphereMid: "#FF6A00",
+              reflectColor: "#FFAE34",
+            }}
+            style={{ width: "100%", height: "100%", background: "transparent", overflow: "visible" }}
+          />
         </div>
       </div>
     </footer>

@@ -1,139 +1,176 @@
-import { useEffect, useRef, useState } from 'react'
-import { gsap } from 'gsap'
-import { AnimatePresence, motion } from 'framer-motion'
-import { useHlsVideo } from '../hooks/useHlsVideo'
+'use client'
+
+import { motion } from 'framer-motion'
+import { personalInfo } from '../data/portfolio'
 import { useReducedMotion } from '../hooks/useReducedMotion'
-import { personalInfo, HLS_SRC } from '../data/portfolio'
+import { useTheme } from '../context/ThemeContext'
+import VectorWordmark from './originkit/ui/vector-wordmark'
+import MagneticButton from './ui/MagneticButton'
+import EmberHusk from './originkit/ui/ember-husk'
+import { playClickPop, playHoverTick } from '../utils/sound'
 
 export default function Hero() {
-  const { videoRef, failed, ready } = useHlsVideo(HLS_SRC)
   const reducedMotion = useReducedMotion()
-  const nameRef = useRef<HTMLHeadingElement | null>(null)
-  const staggerRef = useRef<HTMLDivElement | null>(null)
-  const [roleIndex, setRoleIndex] = useState(0)
+  const { isLight } = useTheme()
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+  const scrollToWork = () => {
+    playClickPop(0.04)
+    const el = document.querySelector('#projects')
+    el?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' })
+  }
 
-      if (reducedMotion) {
-        gsap.set([nameRef.current, staggerRef.current?.children ?? []], {
-          opacity: 1,
-          y: 0,
-          filter: 'blur(0px)',
-        })
-        return
-      }
-
-      tl.fromTo(
-        nameRef.current,
-        { opacity: 0, y: 50 },
-        { opacity: 1, y: 0, duration: 1.2, delay: 0.1 }
-      ).fromTo(
-        staggerRef.current ? Array.from(staggerRef.current.children) : [],
-        { opacity: 0, y: 20, filter: 'blur(10px)' },
-        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1, stagger: 0.1, delay: 0.3 },
-        '<'
-      )
-    })
-
-    return () => ctx.revert()
-  }, [reducedMotion])
-
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      setRoleIndex((i) => (i + 1) % personalInfo.roles.length)
-    }, 2400)
-    return () => window.clearInterval(interval)
-  }, [])
+  const scrollToContact = () => {
+    playClickPop(0.04)
+    const el = document.querySelector('#contact')
+    el?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' })
+  }
 
   return (
     <section
-      id="home"
-      className="relative flex min-h-[100svh] w-full flex-col items-center justify-center overflow-hidden px-6"
+      id="hero"
+      className="relative min-h-[92vh] sm:min-h-screen w-full flex flex-col justify-center pt-24 sm:pt-28 pb-12 sm:pb-16 px-5 sm:px-8 md:px-12 max-w-[1440px] mx-auto z-10"
     >
-      {/* Background video */}
-      <div className="absolute inset-0 -z-10 bg-bg">
-        {!failed && (
-          <video
-            ref={videoRef}
-            className={`h-full w-full object-cover transition-opacity duration-1000 ${
-              ready ? 'opacity-40' : 'opacity-0'
-            }`}
-            autoPlay
-            muted
-            loop
-            playsInline
-            aria-hidden="true"
-          />
-        )}
-        <div className="absolute inset-0 bg-bg/70" />
-        <div className="absolute inset-0 bg-gradient-to-b from-bg/20 via-transparent to-bg" />
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 xl:gap-20 w-full items-center my-auto">
+        {/* Left Column: Monumental Name & Narrative */}
+        <div className="lg:col-span-6 xl:col-span-6 flex flex-col items-start text-left z-20">
+          {/* Status Indicator */}
+          <motion.div
+            initial={{ opacity: 0, y: reducedMotion ? 0 : 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="flex items-center gap-2.5 mb-3 select-none"
+          >
+            <span className="w-2 h-2 rounded-full bg-[#1cec84] shadow-[0_0_8px_#1cec84]" />
+            <span className="font-['IBM_Plex_Mono'] text-xs uppercase tracking-widest text-[#585563] dark:text-[#A9A5AC]">
+              AVAILABLE FOR CREATIVE PROJECTS
+            </span>
+          </motion.div>
 
-      <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-        <span className="text-xs uppercase tracking-[0.3em] text-muted">
-          {personalInfo.eyebrow}
-        </span>
+          {/* Monumental Interactive Vector Wordmark Name */}
+          <motion.div
+            initial={{ opacity: 0, y: reducedMotion ? 0 : 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full relative my-1 select-none"
+          >
+            <h1 className="sr-only">Muhammed Sahil — Cybersecurity Engineer &amp; Full-Stack Architect</h1>
+            <div className="w-full h-[120px] sm:h-[150px] md:h-[180px] lg:h-[200px] xl:h-[220px] relative -ml-1 sm:-ml-2">
+              <VectorWordmark
+                key={isLight ? 'wordmark-light' : 'wordmark-dark'}
+                text="SAHIL"
+                background="transparent"
+                textColor={isLight ? "#121114" : "#F5F2F2"}
+                shade={isLight ? "#B8B5C0" : "#7D7A85"}
+                accent="#E10600"
+                reach={260}
+                speed={reducedMotion ? 0 : 45}
+                damping={60}
+                font={{
+                  fontFamily: "'Moonhouse', sans-serif",
+                  fontWeight: 400,
+                  fontSize: "280px",
+                  letterSpacing: "0.04em",
+                }}
+                handles={{ size: 90, spread: 26, labels: true }}
+                style={{
+                  minWidth: 0,
+                  minHeight: 0,
+                  width: '100%',
+                  height: '100%',
+                  background: 'transparent',
+                }}
+              />
+            </div>
+          </motion.div>
 
-        <h1
-          ref={nameRef}
-          className="mt-6 font-display italic text-6xl leading-[0.95] md:text-8xl lg:text-9xl"
+          {/* Dynamic Role & Narrative */}
+          <motion.div
+            initial={{ opacity: 0, y: reducedMotion ? 0 : 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-3 sm:mt-4 max-w-xl"
+          >
+            <p className="font-['Inter'] font-semibold text-xl sm:text-2xl md:text-3xl text-[#121114] dark:text-[#F5F2F2] leading-snug tracking-tight m-0">
+              {personalInfo.title}
+            </p>
+            <p className="mt-3 font-['Inter'] text-sm sm:text-base text-[#585563] dark:text-[#A9A5AC] leading-relaxed">
+              {personalInfo.description}
+            </p>
+          </motion.div>
+
+          {/* Essential Action CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: reducedMotion ? 0 : 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-7 sm:mt-9 flex flex-wrap items-center gap-3.5"
+          >
+            <MagneticButton
+              label="VIEW WORK ↓"
+              size={46}
+              color="#E10600"
+              textColor="#FFFFFF"
+              onClick={scrollToWork}
+            />
+
+            <MagneticButton
+              label="CONTACT →"
+              size={46}
+              color={isLight ? "#121114" : "#020203"}
+              textColor={isLight ? "#FFFFFF" : "#F5F2F2"}
+              onClick={scrollToContact}
+            />
+
+            <a
+              href={personalInfo.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              onMouseEnter={() => playHoverTick(0.02)}
+              className="editorial-link px-3 py-2 text-xs"
+            >
+              <span>GITHUB</span>
+              <span>↗</span>
+            </a>
+          </motion.div>
+        </div>
+
+        {/* Right Column: OriginKit Ember Husk 3D Interactive Procedural Core */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.92 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: reducedMotion ? 0.01 : 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center items-center w-full relative select-none pointer-events-auto overflow-visible lg:pl-6 xl:pl-10"
         >
-          {personalInfo.name}
-        </h1>
-
-        <div ref={staggerRef} className="mt-6 flex flex-col items-center gap-4">
-          <p className="text-base md:text-lg text-muted">
-            A{' '}
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={personalInfo.roles[roleIndex]}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.4 }}
-                className="inline-block text-text-primary"
-              >
-                {personalInfo.roles[roleIndex]}
-              </motion.span>
-            </AnimatePresence>{' '}
-            building secure software.
-          </p>
-
-          <p className="max-w-xl text-sm md:text-base text-muted">{personalInfo.description}</p>
-
-          <div className="mt-4 flex flex-col items-center gap-3 sm:flex-row">
-            <a
-              href="#projects"
-              onClick={(e) => {
-                e.preventDefault()
-                document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })
+          {/* Seamless unconstrained 3D viewport with wide bleed buffer and generous spacing from left text */}
+          <div className="w-[110%] sm:w-[135%] lg:w-[145%] xl:w-[155%] -left-[5%] sm:-left-[17%] lg:-left-[14%] xl:-left-[16%] lg:translate-x-6 xl:translate-x-10 h-[400px] sm:h-[540px] lg:h-[720px] xl:h-[780px] relative flex items-center justify-center bg-transparent overflow-visible pointer-events-auto">
+            <EmberHusk
+              size={3.2}
+              core={{
+                flow: 10,
+                color: '#E10600',
+                hotColor: '#FFAE34',
+                intensity: 10,
               }}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-text-primary px-6 py-3 text-sm font-medium text-bg transition-transform duration-300 hover:scale-105 gradient-border"
-            >
-              View Projects →
-            </a>
-            <a
-              href="#contact"
-              onClick={(e) => {
-                e.preventDefault()
-                document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
+              drift={{
+                bob: 5,
+                spin: 4,
+                sway: 5,
               }}
-              className="gradient-border inline-flex items-center justify-center gap-2 rounded-full border border-stroke px-6 py-3 text-sm font-medium text-text-primary transition-colors duration-300 hover:border-transparent"
-            >
-              Let's Connect →
-            </a>
+              response={{
+                reach: 9,
+                repel: 7,
+                settle: 5,
+                strength: 7.5,
+              }}
+              style={{
+                width: '100%',
+                height: '100%',
+                background: 'transparent',
+                overflow: 'visible',
+              }}
+            />
           </div>
-        </div>
-      </div>
-
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-muted">Scroll</span>
-        <div className="relative h-12 w-px overflow-hidden bg-stroke">
-          <div className="absolute left-0 top-0 h-3 w-px accent-gradient animate-scroll-down" />
-        </div>
+        </motion.div>
       </div>
     </section>
   )
